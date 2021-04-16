@@ -1,0 +1,12 @@
+body { background-color:#00bfff;
+    background: url(Gradient.png);
+    background-repeat: repeat;}
+
+#textProper {
+    color:#00CC00;
+    background-color: #000000;
+}
+
+#textProper tbody tr:nth-child(even){background-color: #000000;}
+#textProper tbody tr:nth-child(odd){background-color: #ffffff;}
+#textProper tbody tr:hover {background-color: #00adccaf;}
