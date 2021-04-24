@@ -20,6 +20,10 @@ body { background-color:#00bfff;
 #creatureTable tbody tr:nth-child(odd){background-color: #ffffff;}
 #creatureTable tbody tr:hover {background-color: #00adccaf;}
 
+.name, .initiative, .armorClass, .hitPoints {
+    height: 34px;
+}
+
 .initiativeHeader {
     width:30%;
 }
