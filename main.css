@@ -1,12 +1,58 @@
 body { background-color:#00bfff;
     background: url(Gradient.png);
-    background-repeat: repeat;}
+    background-repeat: repeat;
+}
 
-#textProper {
+#inputTable {
+    margin: 16px;
+}
+
+#creatureTable {
     color:#00CC00;
     background-color: #000000;
 }
 
-#textProper tbody tr:nth-child(even){background-color: #000000;}
-#textProper tbody tr:nth-child(odd){background-color: #ffffff;}
-#textProper tbody tr:hover {background-color: #00adccaf;}
+#creatureTable td {
+    padding: 4px;
+}
+
+#creatureTable tbody tr:nth-child(even){background-color: #000000;}
+#creatureTable tbody tr:nth-child(odd){background-color: #ffffff;}
+#creatureTable tbody tr:hover {background-color: #00adccaf;}
+
+.initiativeHeader {
+    width:30%;
+}
+
+.acHeader {
+    width:38px;
+}
+
+.hpHeader {
+    width: 50px;
+}
+
+.removeHeader {
+    width: 88px;
+}
+
+.lockHeader {
+    width: 50px;
+}
+
+.duplicateHeader {
+    width: 94px;
+}
+
+.remove {
+    color: #ff0000;
+}
+
+.locker {
+    height: 25px;
+    width: 40px;
+}
+
+.dupe {
+    color: #0000ff;
+}

@@ -15,20 +15,20 @@
 
 <body>
     <table id="inputTable">
-        <th height="16px"></th>
+        <th></th>
         <tr>
             <td>
                 <div>
-                    &nbsp;<input type="text" id="creature" placeholder="Name" autocomplete="off"><br>
+                    <input type="text" id="creature" placeholder="Name" autocomplete="off"><br>
                     <br>
-                    &nbsp;<input type="number" id="init" placeholder="Initiative"><br>
+                    <input type="number" id="init" placeholder="Initiative"><br>
                     <br>
-                    &nbsp;<input type="number" id="armorClass" placeholder="AC"><br>
+                    <input type="number" id="armorClass" placeholder="AC"><br>
                     <br>
-                    &nbsp;<input type="number" id="hitPoints" placeholder="HP"><br>
+                    <input type="number" id="hitPoints" placeholder="HP"><br>
                     <br>
-                    &nbsp;<button onclick="addToTable($('#creature').val(),$('#init').val(),$('#armorClass').val(),$('#hitPoints').val())">Add</button>
-                    &nbsp;<button onclick="sortTable(1)">Sort</button>
+                    <button class="btn" onclick="addToTable($('#creature').val(),$('#init').val(),$('#armorClass').val(),$('#hitPoints').val())">Add</button>
+                    <button class="btn" onclick="sortTable(1)">Sort</button>
                 </div>
             </td>
             <td>
@@ -36,16 +36,15 @@
             </td>
         </tr>
     </table>
-    <br>
-    <table id="textProper" class="table table-bordered table-sm">
+    <table id="creatureTable" class="table table-bordered table-sm">
         <thead>
-            <th onclick="sortTable(0)">Name</th>
-            <th onclick="sortTable(1)">Initiative</th>
-            <th onclick="sortTable(2)" width="1%">AC</th>
-            <th onclick="sortTable(3)" width="15%">HP</th>
-            <th width="1%">Remove</th>
-            <th width="1%">Lock</th>
-            <th width="1%">Duplicate</th>
+            <th class="namesHeader" onclick="sortTable(0)">Name</th>
+            <th class="initiativeHeader" onclick="sortTable(1)">Initiative</th>
+            <th class="acHeader" onclick="sortTable(2)">AC</th>
+            <th class="hpHeader" onclick="sortTable(3)">HP</th>
+            <th class="removeHeader">Remove</th>
+            <th class="lockHeader">Lock</th>
+            <th class="duplicateHeader">Duplicate</th>
         </thead>
         <tbody id="creatureList"></tbody>
     </table>

@@ -1,12 +1,14 @@
 var maxTableRow = 0;
 
 document.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-        // https://stackoverflow.com/questions/4604930/changing-the-keypress
-        e.preventDefault();
-    } else {
-        //console.log(event);
-    }
+  // For the enter key, prevent making a newline. Instead leave the element.
+  if (e.key === "Enter") {
+      // https://stackoverflow.com/questions/4604930/changing-the-keypress
+      e.preventDefault();
+      document.activeElement.blur();
+  } else {
+      //print(event);
+  }
 });
 
 /** Adds a row to the table with a unique id, and the provided statistics.
@@ -26,19 +28,19 @@ function addToTable(name, init, ac, hp) {
     // Start the table row, and give a unique ID.
     let newRow = '<tr id="tr' + maxTableRow + '">'
     // Add the name, initiative, Armor Class, and hitpoint sections.
-    newRow += '<td contenteditable class="name">' + name + '</td>';
-    newRow += '<td contenteditable class="initiative">' + init + '</td>';
-    newRow += '<td contenteditable class="armorClass">' + ac + '</td>';
-    newRow += '<td contenteditable class="hitPoints">' + hp + '</td>';
+    newRow += '<td> <div contenteditable class="name">' + name + '</div> </td>';
+    newRow += '<td> <div contenteditable class="initiative">' + init + '</div> </td>';
+    newRow += '<td> <div contenteditable class="armorClass">' + ac + '</div> </td>';
+    newRow += '<td> <div contenteditable class="hitPoints">' + hp + '</div> </td>';
     // Add the ability to remove said row.
-    newRow += '<td onclick="removeTableRow(' + maxTableRow + ')">Remove</td>'
+    newRow += '<td> <button onclick="removeTableRow(' + maxTableRow + ')" class="remove btn">Remove</button> </td>'
     // Add the ability to lock said row. (Prevent deletion).
-    newRow += '<td><input type="checkbox"></td>'
+    newRow += '<td> <input type="checkbox" class="locker"></td>'
     // Add the ability to duplicate said row.
-    newRow += '<td onclick="duplicateRow(' + maxTableRow + ')">Duplicate</td>';
+    newRow += '<td> <button onclick="duplicateRow(' + maxTableRow + ')" class="duplicate btn dupe">Duplicate</button> </td>';
     newRow += '</tr>'
     // Add the new row to the table.
-    $("#textProper tbody").append(newRow);
+    $("#creatureTable tbody").append(newRow);
     // Increment the row.
     maxTableRow++;
 }
@@ -54,31 +56,32 @@ function clearInputs() {
 
 /** Removes a row from the table with the ("tr" + row) id.
  * 
- * @param {Number} row The row of the table to be removed.
+ * @param {Number} row The id number of the row to be removed.
  */
 function removeTableRow(row) {
     if (!$("#tr" + row + " input").prop('checked'))
         $("#tr" + row).remove();
 }
 
-/** Duplicates a row with the provided tr id, and adds it to the table.
+/** Duplicates a row with the provided ("tr" + row) id, and adds it to the table.
+ * The new entry has a unique id.
  * 
- * @param {Number} row The ("tr" + row) id of the row to be duplicated.
+ * @param {Number} row The id number of the row to be duplicated.
  */
 function duplicateRow(row) {
-    tableRow = "#tr" + row;
+    let tableRow = "#tr" + row;
     addToTable($(tableRow + " .name").html(), $(tableRow + " .initiative").html(), 
         $(tableRow + " .armorClass").html(), $(tableRow + " .hitPoints").html());
 }
 
 // https://www.w3schools.com/howto/howto_js_sort_table.asp was the base
-function sortTable(n) {
+function sortTable(col) {
   var table, rows, switching, i, x, y, shouldSwitch, dirAscending, switchcount = 0;
   table = document.getElementById("creatureList");
   rows = table.rows;
   switching = true;
   // Set the sorting direction to ascending:
-  if (n == 0)
+  if (col == 0)
     dirAscending = true;
   else
     dirAscending = false;
@@ -96,13 +99,13 @@ function sortTable(n) {
       /* Get the two elements you want to compare,
       one from current row and one from the next: */
       // Pulling DIV's instead of TD as that was not working out with the divs inside of each td.
-      x = rows[i].getElementsByTagName("TD")[n];
-      y = rows[i + 1].getElementsByTagName("TD")[n];
+      x = rows[i].getElementsByTagName("Div")[col];
+      y = rows[i + 1].getElementsByTagName("Div")[col];
       /* Check if the two rows should switch place,
       based on the direction, asc or desc: */
       if (dirAscending) {
         // The first row is name, and should use alphabetization.
-        if (n == 0) {
+        if (col == 0) {
           if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
             // If so, mark as a switch and break the loop:
             shouldSwitch = true;
@@ -117,7 +120,7 @@ function sortTable(n) {
         }
       } else if (!dirAscending) {
         // The first row is name, and should use alphabetization.
-        if (n == 0) {
+        if (col == 0) {
           if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
             // If so, mark as a switch and break the loop:
             shouldSwitch = true;
@@ -144,10 +147,10 @@ function sortTable(n) {
       /* If no switching has been done AND the direction is "asc",
       set the direction to "desc" and run the while loop again. */
       if (switchcount == 0) {
-        if (dirAscending && n==0) {
+        if (dirAscending && col == 0) {
           dirAscending = !dirAscending;
           switching = true;
-        } else if (!dirAscending && n != 0) {
+        } else if (!dirAscending && col != 0) {
           dirAscending = !dirAscending;
           switching = true;
         }
