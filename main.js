@@ -21,7 +21,8 @@ document.addEventListener("keypress", function (e) {
 function addToTable(name, init, ac, hp) {
     clearInputs();
     if (name == "") { name = "placeholder"; }
-    if (init == 0) { init = Math.floor(Math.random() * 20) + 1; }
+    // Initiative is between 1 and 20.
+    if (init == 0) { init = roll(20); }
     if (ac == 0) { ac = 10; }
     if (hp == 0) { hp = 1; }
     //https://stackoverflow.com/questions/6012823/how-to-make-html-table-cell-editable
@@ -34,7 +35,7 @@ function addToTable(name, init, ac, hp) {
     newRow += '<td> <div contenteditable class="hitPoints">' + hp + '</div> </td>';
     // Add the ability to remove said row.
     newRow += '<td> <button onclick="removeTableRow(' + maxTableRow + ')" class="remove btn">Remove</button> </td>'
-    // Add the ability to lock said row. (Prevent deletion).
+    // Add the ability to lock said row. (Prevent removal).
     newRow += '<td> <input type="checkbox" class="locker"></td>'
     // Add the ability to duplicate said row.
     newRow += '<td> <button onclick="duplicateRow(' + maxTableRow + ')" class="duplicate btn dupe">Duplicate</button> </td>';
@@ -45,13 +46,45 @@ function addToTable(name, init, ac, hp) {
     maxTableRow++;
 }
 
-/** Clears the input values.
+function rollDice(number) {
+  var appendText = $("#dieResults").val();
+  let dieResults = [];
+  let dieTotal = 0, numRolls;
+  numRolls = $("#D" + number + "Roller").val();
+  if (!number) {
+    number = $("#D0Roller2").val();
+  }
+  let prependText = numRolls + "d" + number + ": (";
+
+  for (let i = 0; i < numRolls; i++) {
+    dieResults[i] = roll(number);
+    prependText += dieResults[i] + ", ";
+    dieTotal += dieResults[i];
+  }
+  prependText = prependText.slice(0,-2);
+  prependText += ")\nTotal: " + dieTotal + "\n";
+  // https://stackoverflow.com/questions/23700824/after-erasing-clearing-a-textarea-i-can-no-longer-append-text-to-it/23701067
+  $("#dieResults").val(prependText + "\n" + appendText);
+}
+
+/** Returns a random number from 1 to the given number.
+ * 
+ * @param {Number} number The roof for the random number.
+ * @returns A random number from 1 to the given number.
+ */
+function roll(number, modifier = 1) {
+  number = Math.floor(Math.random() * number) + modifier
+  if (number < 1) number = 1;
+  return number;
+}
+
+/** Clears the input values on the section for 
  */
 function clearInputs() {
-    $("#creature").val("");
-    $("#init").val("");
-    $("#armorClass").val("");
-    $("#hitPoints").val("");
+  $("#creature").val("");
+  $("#init").val("");
+  $("#armorClass").val("");
+  $("#hitPoints").val("");
 }
 
 /** Removes a row from the table with the ("tr" + row) id.
@@ -70,7 +103,8 @@ function removeTableRow(row) {
  */
 function duplicateRow(row) {
     let tableRow = "#tr" + row;
-    addToTable($(tableRow + " .name").html(), $(tableRow + " .initiative").html(), 
+    // Copy all attributes except for the initiative so that it may be different.
+    addToTable($(tableRow + " .name").html(), 0, 
         $(tableRow + " .armorClass").html(), $(tableRow + " .hitPoints").html());
 }
 
@@ -135,7 +169,6 @@ function sortTable(col) {
         }
       }
     }
-    // print("rows: " + rows.length + " N: " + n);
     if (shouldSwitch) {
       /* If a switch has been marked, make the switch
       and mark that a switch has been done: */
@@ -159,7 +192,36 @@ function sortTable(col) {
   }
 }
 
+function startup() {
+  makeDieTable("#dieRoller1", [["D100", 100], ["D20", 20], ["D12", 12], ["D10", 10]]);
+  makeDieTable("#dieRoller2", [["D8", 8], ["D6", 6], ["D4", 4], ["D0", 0]]);
+}
+
+function makeDieTable(id, list){
+  let dieInput = '<input type="number" value="1" min="1" max="100" class="dieInput"';
+  let tableHtml = "<tr><th>X Dice</th><th>Die</th><th>Action</th>";
+  for (let i = 0; i < list.length; i++) {
+    let row = '<tr><td>' + dieInput + 'id="';
+    row += list[i][0];
+    row += 'Roller"></td><td>';
+    if (list[i][1]) {
+      row += list[i][0];
+    } else {
+      row += dieInput + 'id="';
+      row += list[i][0];
+      row += 'Roller2">';
+    }
+    row += '</td><td><button class="btn" onclick="rollDice(';
+    row += list[i][1];
+    row += ')">Roll</button></td></tr>'
+    tableHtml += row;
+  }
+  $(id).html(tableHtml);
+}
+
 /** Print to the console. */
 function print() {
     for (i = 0; i < arguments.length; i++) console.log(arguments[i]);
 }
+
+$(startup);

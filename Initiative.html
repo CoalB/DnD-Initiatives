@@ -15,7 +15,6 @@
 
 <body>
     <table id="inputTable">
-        <th></th>
         <tr>
             <td>
                 <div>
@@ -31,9 +30,21 @@
                     <button class="btn" onclick="sortTable(1)">Sort</button>
                 </div>
             </td>
+            <!-- <td>
+                <input type="color" id="colorPicker">
+            </td> -->
+            <td class="inputTableSpacer"></td>
             <td>
-                Whatcha want here?
+                <table id="dieRoller1">
+                </table>
             </td>
+            <td class="inputTableSpacer"></td>
+            <td>
+                <table id="dieRoller2">
+                </table>
+            </td>
+            <td class="inputTableSpacer"></td>
+            <td><textarea id="dieResults"></textarea></td>
         </tr>
     </table>
     <table id="creatureTable" class="table table-bordered table-sm">
