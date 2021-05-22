@@ -46,22 +46,36 @@ function addToTable(name, init, ac, hp) {
     maxTableRow++;
 }
 
-function rollDice(number) {
+/** Rolls a number of dice in the table, with the number of sides provided, and shows the results in the die results textarea. '0' is used for the custom die.
+ * 
+ * @param {Number} dieSides The number of sides the die that's trying to roll has.
+ */
+function rollDice(dieSides) {
+  // Grab all the text that exists in the textarea previously.
   var appendText = $("#dieResults").val();
-  let dieResults = [];
-  let dieTotal = 0, numRolls;
-  numRolls = $("#D" + number + "Roller").val();
-  if (!number) {
-    number = $("#D0Roller2").val();
+  // dieResults will hold each individual roll, and dieTotal will take a cumulative total.
+  let dieResults = [], dieTotal = 0;
+  let numRolls = $("#D" + dieSides + "Roller").val();
+  // If the value for number of dice is empty, then default to 1 die roll.
+  if (!numRolls) numRolls = 1;
+  // If it's the custom die grab the proper number instead of '0' default.
+  if (!dieSides) {
+    let newNumber = $("#D0Roller2").val()
+    // If the value is empty, then default to a 1 sided die.
+    dieSides = (newNumber) ? newNumber:1;
   }
-  let prependText = numRolls + "d" + number + ": (";
+  // Show the user the combination of dice they're rolling.
+  let prependText = numRolls + "d" + dieSides + ": (";
 
+  // Show the result of each die roll.
   for (let i = 0; i < numRolls; i++) {
-    dieResults[i] = roll(number);
+    dieResults[i] = roll(dieSides);
     prependText += dieResults[i] + ", ";
     dieTotal += dieResults[i];
   }
+  // Remove extra the comma, and space.
   prependText = prependText.slice(0,-2);
+  // Add the total of the dice rolled to the text.
   prependText += ")\nTotal: " + dieTotal + "\n";
   // https://stackoverflow.com/questions/23700824/after-erasing-clearing-a-textarea-i-can-no-longer-append-text-to-it/23701067
   $("#dieResults").val(prependText + "\n" + appendText);
@@ -72,13 +86,13 @@ function rollDice(number) {
  * @param {Number} number The roof for the random number.
  * @returns A random number from 1 to the given number.
  */
-function roll(number, modifier = 1) {
-  number = Math.floor(Math.random() * number) + modifier
+function roll(number, modifier = 0) {
+  number = Math.floor(Math.random() * number) + modifier + 1;
   if (number < 1) number = 1;
   return number;
 }
 
-/** Clears the input values on the section for 
+/** Clears the input values for name, initiaitve, ac, and hp.
  */
 function clearInputs() {
   $("#creature").val("");
@@ -112,9 +126,8 @@ function duplicateRow(row) {
 function sortTable(col) {
   var table, rows, switching, i, x, y, shouldSwitch, dirAscending, switchcount = 0;
   table = document.getElementById("creatureList");
-  rows = table.rows;
   switching = true;
-  // Set the sorting direction to ascending:
+  // Set the sorting direction to ascending for names, and descending for numbers.
   if (col == 0)
     dirAscending = true;
   else
@@ -192,27 +205,34 @@ function sortTable(col) {
   }
 }
 
+/** Make the dice rolling tables.
+ */
 function startup() {
-  makeDieTable("#dieRoller1", [["D100", 100], ["D20", 20], ["D12", 12], ["D10", 10]]);
-  makeDieTable("#dieRoller2", [["D8", 8], ["D6", 6], ["D4", 4], ["D0", 0]]);
+  makeDieTable("#dieRoller1", [100, 20, 12, 10]);
+  makeDieTable("#dieRoller2", [8, 6, 4, 0]);
 }
 
+/** Easily sets up the tables for rolling dice.
+ * Editing the tables is significantly easier this way.
+ * @param {String} id The id of the table to constructed. Including the #.
+ * @param {Array} list A 1-D array with all dice that will be in that table. '0' is for the custom die.
+ */
 function makeDieTable(id, list){
   let dieInput = '<input type="number" value="1" min="1" max="100" class="dieInput"';
-  let tableHtml = "<tr><th>X Dice</th><th>Die</th><th>Action</th>";
+  let tableHtml = '<tr><th>X Dice</th><th>Die</th><th>Action</th>';
   for (let i = 0; i < list.length; i++) {
-    let row = '<tr><td>' + dieInput + 'id="';
-    row += list[i][0];
+    let row = '<tr><td>' + dieInput + 'id="D';
+    row += list[i];
     row += 'Roller"></td><td>';
-    if (list[i][1]) {
-      row += list[i][0];
+    if (list[i]) {
+      row += 'D' + list[i];
     } else {
-      row += dieInput + 'id="';
-      row += list[i][0];
+      row += dieInput + 'id="D';
+      row += list[i];
       row += 'Roller2">';
     }
     row += '</td><td><button class="btn" onclick="rollDice(';
-    row += list[i][1];
+    row += list[i];
     row += ')">Roll</button></td></tr>'
     tableHtml += row;
   }
